@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+        <style>
+            div {
+                font-size: 18px;
+            }
+
+        </style>
+    </head>
+    <body>
+
+        <div class="form-group">
+            <label for="inputCity">Votre ville</label>
+            <input type="text" class="form-control" id="inputCity" placeholder="Ville">
+        </div>
+        <button class="btn btn-default" id="meteo">Voir la météo</button>
+
+        <div id="Resultat"></div>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#meteo").on('click', function() {
+
+                    function reqListener() {
+                        var meteoVille = JSON.parse(this.responseText);
+                        var tempVille = meteoVille.main.temp;
+                        var nomVille = meteoVille.name;
+                        var degre = parseInt(tempVille);
+                        var max = meteoVille.main.temp_max;
+                        var tempMax = parseInt(max);
+                        var min = meteoVille.main.temp_min;
+                        var tempMin = parseInt(min);
+                        var humidite = meteoVille.main.humidity;
+                        var Wvent = meteoVille.wind.speed;
+                        var vent = parseInt(Wvent);
+
+                        var descripttemps = meteoVille.weather[0].description
+                        var idTemps = parseInt(meteoVille.weather[0].id)
+                        var id_icon = meteoVille.weather[0].icon;
+
+                        var urlimage = "http://openweathermap.org/img/w/" + id_icon + ".png"
+
+                        document.getElementById('Resultat').innerHTML = "<br>Prévision Météo à " + nomVille + "<br><br>Température actuelle " + degre + "°Celcius.<br><br>Températures prévues : " + tempMin + " min. - " + tempMax + " max.<br> <br>Humidité : " + humidite + " % <br>Vent : " + vent + " km/h.<br><br> Temps : " + descripttemps + ".<br> <img src=" + urlimage + ">"
+
+                    }
+                    // la variable city  la ville rentrée dans le fomulaire
+
+                    var city = document.getElementById("inputCity").value;
+
+                    // requête sur l'api weathermap avec la variable city , et les degrés en celcius=>units=metric et l'api key récupérée sir weather map...
+
+                    var req = new XMLHttpRequest();
+                    req.onload = reqListener;
+                    req.open('GET', 'http://api.openweathermap.org/data/2.5/weather?q=' + city + '&units=metric&APPID=f3e34661cd6d2a6c41c2d564d36b0d3b&lang=fr', false);
+                    req.send();
+
+                });
+            });
+        </script>
+
+    </body>
+</html>
